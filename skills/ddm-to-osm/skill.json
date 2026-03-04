@@ -1,0 +1,16 @@
+{
+  "name": "ddm-to-osm",
+  "version": "1.0.0",
+  "description": "Convert Datablau DDM to OSM (Ontology-Lite Semantic Model)",
+  "author": "小龙虾",
+  "license": "MIT",
+  "dependencies": {
+    "python": ">=3.7",
+    "packages": ["pyyaml"]
+  },
+  "tags": ["ddm", "osm", "semantic-model", "data-modeling", "database", "ontology"],
+  "main": "convert.py",
+  "repository": "",
+  "homepage": "",
+  "documentation": "SKILL.md"
+}

@@ -1,0 +1,2048 @@
+# ============================================================
+# OSM (Ontology-Lite Semantic Model)
+# Auto-generated from DDM
+# Database: sakila
+# ============================================================
+
+ontology:
+  entities:
+    Actor:
+      label: 演员信息表
+      description: 演员信息表
+      attributes:
+        actor_id:
+          label: 演员ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        first_name:
+          label: 演员名字
+          type: string
+          physical_type: VARCHAR(45)
+          nullable: false
+          semantic_type: name
+        last_name:
+          label: 演员姓氏
+          type: string
+          physical_type: VARCHAR(45)
+          nullable: false
+          semantic_type: name
+        last_update:
+          label: 最后更新时间
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations: []
+    Address:
+      label: 地址表
+      description: 地址表
+      attributes:
+        address_id:
+          label: 地址ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        address:
+          label: 地址
+          type: string
+          physical_type: VARCHAR(50)
+          nullable: false
+          semantic_type: attribute
+        address2:
+          label: 地址补充信息
+          type: string
+          physical_type: VARCHAR(50)
+          nullable: true
+          semantic_type: attribute
+        district:
+          label: 地区
+          type: string
+          physical_type: VARCHAR(20)
+          nullable: false
+          semantic_type: attribute
+        city_id:
+          label: 城市ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        postal_code:
+          label: 邮政编码
+          type: string
+          physical_type: VARCHAR(10)
+          nullable: true
+          semantic_type: attribute
+        phone:
+          label: 电话
+          type: string
+          physical_type: VARCHAR(20)
+          nullable: false
+          semantic_type: phone
+        location:
+          label: 位置
+          type: geometry
+          physical_type: GEOMETRY
+          nullable: false
+          semantic_type: attribute
+        last_update:
+          label: 最后更新时间
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations:
+      - name: city-address
+        target: City
+        cardinality: many_to_one
+        inverse: addresss
+    Category:
+      label: 电影分类表
+      description: 电影分类表
+      attributes:
+        category_id:
+          label: 分类ID
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        name:
+          label: 分类名称
+          type: string
+          physical_type: VARCHAR(25)
+          nullable: false
+          semantic_type: name
+        last_update:
+          label: 最后更新时间
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations: []
+    City:
+      label: 城市表
+      description: 城市表
+      attributes:
+        city_id:
+          label: city_id
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        city:
+          label: 城市
+          type: string
+          physical_type: VARCHAR(50)
+          nullable: false
+          semantic_type: attribute
+        country_id:
+          label: country_id
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        last_update:
+          label: last_update
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations:
+      - name: country-city
+        target: Country
+        cardinality: many_to_one
+        inverse: citys
+    Country:
+      label: 国家表
+      description: 国家表
+      attributes:
+        country_id:
+          label: country_id
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        country:
+          label: 国家
+          type: string
+          physical_type: VARCHAR(50)
+          nullable: false
+          semantic_type: count
+        last_update:
+          label: last_update
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations: []
+    Customer:
+      label: 客户信息表
+      description: 客户信息表
+      attributes:
+        customer_id:
+          label: 客户ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        store_id:
+          label: 商店ID
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        first_name:
+          label: 客户名字
+          type: string
+          physical_type: VARCHAR(45)
+          nullable: false
+          semantic_type: name
+        last_name:
+          label: 客户姓氏
+          type: string
+          physical_type: VARCHAR(45)
+          nullable: false
+          semantic_type: name
+        email:
+          label: 电子邮件
+          type: string
+          physical_type: VARCHAR(50)
+          nullable: true
+          semantic_type: email
+        address_id:
+          label: 地址ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        active:
+          label: 是否激活
+          type: integer
+          physical_type: TINYINT(1)
+          nullable: false
+          semantic_type: attribute
+          default: '1'
+        create_date:
+          label: 创建日期
+          type: datetime
+          physical_type: DATETIME
+          nullable: false
+          semantic_type: timestamp
+        last_update:
+          label: 最后更新时间
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: true
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations:
+      - name: address-customer
+        target: Address
+        cardinality: many_to_one
+        inverse: customers
+      - name: store-customer
+        target: Store
+        cardinality: many_to_one
+        inverse: customers
+    Film:
+      label: 电影信息表
+      description: 电影信息表
+      attributes:
+        length_category:
+          label: 片长类型
+          type: string
+          physical_type: VARCHAR(10)
+          nullable: true
+          semantic_type: attribute
+        production_scale:
+          label: 制作规模
+          type: string
+          physical_type: VARCHAR(20)
+          nullable: true
+          semantic_type: attribute
+        film_id:
+          label: 电影ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        title:
+          label: 电影标题
+          type: string
+          physical_type: VARCHAR(255)
+          nullable: false
+          semantic_type: name
+        description:
+          label: 电影描述
+          type: string
+          physical_type: TEXT
+          nullable: true
+          semantic_type: attribute
+        release_year:
+          label: 上映年份
+          type: string
+          physical_type: YEAR
+          nullable: true
+          semantic_type: attribute
+        language_id:
+          label: 语言ID
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        original_language_id:
+          label: 源语言
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: true
+          semantic_type: foreign_key
+        rental_duration:
+          label: 租赁时长（天）
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: attribute
+          default: '3'
+        rental_rate:
+          label: 租赁费率
+          type: decimal
+          physical_type: DECIMAL(4,2)
+          nullable: false
+          semantic_type: percentage
+          default: '4.99'
+        length:
+          label: 电影时长（分钟）
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: true
+          semantic_type: attribute
+        replacement_cost:
+          label: 替换成本
+          type: decimal
+          physical_type: DECIMAL(5,2)
+          nullable: false
+          semantic_type: currency
+          default: '19.99'
+        rating:
+          label: 电影评级
+          type: string
+          physical_type: ENUM('G','PG','PG-13','R','NC-17')
+          nullable: true
+          semantic_type: attribute
+          default: G
+        special_features:
+          label: 主题
+          type: string
+          physical_type: SET('TRAILERS','COMMENTARIES','DELETED SCENES','BEHIND THE SCENES')
+          nullable: true
+          semantic_type: attribute
+        last_update:
+          label: 最后更新时间
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations:
+      - name: language-film
+        target: Language
+        cardinality: many_to_one
+        inverse: films
+    FilmActor:
+      label: 电影与演员关联表
+      description: 电影与演员关联表
+      attributes:
+        actor_id:
+          label: 演员ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+        film_id:
+          label: 电影ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+        last_update:
+          label: 最后更新时间
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations:
+      - name: actor-film_actor
+        target: Actor
+        cardinality: many_to_one
+        inverse: film_actors
+      - name: film-film_actor
+        target: Film
+        cardinality: many_to_one
+        inverse: film_actors
+    FilmCategory:
+      label: 电影与分类关联表
+      description: 电影与分类关联表
+      attributes:
+        film_id:
+          label: 电影ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+        category_id:
+          label: 分类ID
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+        last_update:
+          label: 最后更新时间
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations:
+      - name: category-film_category
+        target: Category
+        cardinality: many_to_one
+        inverse: film_categorys
+      - name: film-film_category
+        target: Film
+        cardinality: many_to_one
+        inverse: film_categorys
+    FilmText:
+      label: 电影描述表
+      description: 电影描述表
+      attributes:
+        film_id:
+          label: film_id
+          type: integer
+          physical_type: SMALLINT
+          nullable: false
+          semantic_type: identifier
+        title:
+          label: 电影标题
+          type: string
+          physical_type: VARCHAR(255)
+          nullable: false
+          semantic_type: name
+        description:
+          label: 电影描述
+          type: string
+          physical_type: TEXT
+          nullable: true
+          semantic_type: attribute
+      relations: []
+    Inventory:
+      label: 库存表
+      description: 库存表
+      attributes:
+        inventory_id:
+          label: 库存ID
+          type: integer
+          physical_type: MEDIUMINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        film_id:
+          label: 电影ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        store_id:
+          label: 商店ID
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        last_update:
+          label: 最后更新时间
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations:
+      - name: film-inventory
+        target: Film
+        cardinality: many_to_one
+        inverse: inventorys
+      - name: store-inventory
+        target: Store
+        cardinality: many_to_one
+        inverse: inventorys
+    Language:
+      label: 语言表
+      description: 语言表
+      attributes:
+        language_id:
+          label: 语言ID
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        name:
+          label: 语言名称
+          type: string
+          physical_type: CHAR(20)
+          nullable: false
+          semantic_type: name
+        last_update:
+          label: 最后更新时间
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations: []
+    Payment:
+      label: 支付表
+      description: 支付表
+      attributes:
+        payment_id:
+          label: 支付ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        customer_id:
+          label: 客户ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        staff_id:
+          label: 员工ID
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        rental_id:
+          label: 租赁ID
+          type: integer
+          physical_type: INT
+          nullable: true
+          semantic_type: foreign_key
+        amount:
+          label: 支付金额
+          type: decimal
+          physical_type: DECIMAL(5,2)
+          nullable: false
+          semantic_type: currency
+        payment_date:
+          label: 支付时间
+          type: datetime
+          physical_type: DATETIME
+          nullable: false
+          semantic_type: timestamp
+        last_update:
+          label: last_update
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: true
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations:
+      - name: customer-payment
+        target: Customer
+        cardinality: many_to_one
+        inverse: payments
+      - name: rental-payment
+        target: Rental
+        cardinality: many_to_one
+        inverse: payments
+      - name: staff-payment
+        target: Staff
+        cardinality: many_to_one
+        inverse: payments
+    Rental:
+      label: 租赁表
+      description: 租赁表
+      attributes:
+        rental_id:
+          label: 租赁ID
+          type: integer
+          physical_type: INT
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        rental_date:
+          label: 租赁日期
+          type: datetime
+          physical_type: DATETIME
+          nullable: false
+          semantic_type: timestamp
+        inventory_id:
+          label: 库存ID
+          type: integer
+          physical_type: MEDIUMINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        customer_id:
+          label: 客户ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        return_date:
+          label: 归还日期
+          type: datetime
+          physical_type: DATETIME
+          nullable: true
+          semantic_type: timestamp
+        staff_id:
+          label: 员工ID
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        last_update:
+          label: 最后更新时间
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations:
+      - name: customer-rental
+        target: Customer
+        cardinality: many_to_one
+        inverse: rentals
+      - name: inventory-rental
+        target: Inventory
+        cardinality: many_to_one
+        inverse: rentals
+      - name: staff-rental
+        target: Staff
+        cardinality: many_to_one
+        inverse: rentals
+    Staff:
+      label: 员工表
+      description: 员工表
+      attributes:
+        staff_id:
+          label: 员工ID
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        first_name:
+          label: 员工名字
+          type: string
+          physical_type: VARCHAR(45)
+          nullable: false
+          semantic_type: name
+        last_name:
+          label: 员工姓氏
+          type: string
+          physical_type: VARCHAR(45)
+          nullable: false
+          semantic_type: name
+        age:
+          label: 年龄
+          type: integer
+          physical_type: INT
+          nullable: true
+          semantic_type: attribute
+          default: '25'
+        address_id:
+          label: address_id
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        picture:
+          label: 图片
+          type: string
+          physical_type: BLOB
+          nullable: true
+          semantic_type: attribute
+        email:
+          label: 电子邮件
+          type: string
+          physical_type: VARCHAR(50)
+          nullable: true
+          semantic_type: email
+        store_id:
+          label: 商店ID
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        active:
+          label: 是否在职
+          type: integer
+          physical_type: TINYINT(1)
+          nullable: false
+          semantic_type: attribute
+          default: '1'
+        username:
+          label: 用户名称
+          type: string
+          physical_type: VARCHAR(16)
+          nullable: false
+          semantic_type: name
+        password:
+          label: 密码
+          type: string
+          physical_type: VARCHAR(40)
+          nullable: true
+          semantic_type: attribute
+        last_update:
+          label: 最后更新时间
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations:
+      - name: address-staff
+        target: Address
+        cardinality: many_to_one
+        inverse: staffs
+      - name: store-staff
+        target: Store
+        cardinality: many_to_one
+        inverse: staffs
+    Store:
+      label: 商店表
+      description: 商店表
+      attributes:
+        store_id:
+          label: 商店ID
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: identifier
+          auto_increment: true
+        manager_staff_id:
+          label: 店长ID
+          type: integer
+          physical_type: TINYINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        address_id:
+          label: 地址ID
+          type: integer
+          physical_type: SMALLINT UNSIGNED
+          nullable: false
+          semantic_type: foreign_key
+        last_update:
+          label: 最后更新时间
+          type: datetime
+          physical_type: TIMESTAMP
+          nullable: false
+          semantic_type: timestamp
+          default: CURRENT_TIMESTAMP on update current_timestamp
+      relations:
+      - name: address-store
+        target: Address
+        cardinality: many_to_one
+        inverse: stores
+      - name: staff-store
+        target: Staff
+        cardinality: many_to_one
+        inverse: stores
+    User:
+      label: 用户信息表
+      description: 用户信息表
+      attributes:
+        id:
+          label: 用户ID
+          type: integer
+          physical_type: INT
+          nullable: false
+          semantic_type: identifier
+        name:
+          label: 姓名
+          type: string
+          physical_type: VARCHAR(100)
+          nullable: true
+          semantic_type: name
+        age:
+          label: 年龄
+          type: integer
+          physical_type: INT
+          nullable: true
+          semantic_type: attribute
+      relations: []
+semantic_models:
+  actor:
+    entity: Actor
+    data_source:
+      type: mysql
+      connection: sakila
+    table: actor
+    primary_key: actor_id
+    dimensions:
+      actor_id:
+        label: 演员ID
+        column: actor_id
+        type: integer
+      first_name:
+        label: 演员名字
+        column: first_name
+        type: string
+      last_name:
+        label: 演员姓氏
+        column: last_name
+        type: string
+      last_update:
+        label: 最后更新时间
+        column: last_update
+        type: datetime
+    measures: {}
+    joins: {}
+  address:
+    entity: Address
+    data_source:
+      type: mysql
+      connection: sakila
+    table: address
+    primary_key: address_id
+    dimensions:
+      address_id:
+        label: 地址ID
+        column: address_id
+        type: integer
+      address:
+        label: 地址
+        column: address
+        type: string
+      address2:
+        label: 地址补充信息
+        column: address2
+        type: string
+      district:
+        label: 地区
+        column: district
+        type: string
+      city_id:
+        label: 城市ID
+        column: city_id
+        type: integer
+      postal_code:
+        label: 邮政编码
+        column: postal_code
+        type: string
+      phone:
+        label: 电话
+        column: phone
+        type: string
+      location:
+        label: 位置
+        column: location
+        type: geometry
+      last_update:
+        label: 最后更新时间
+        column: last_update
+        type: datetime
+    measures: {}
+    joins:
+      city_join:
+        target_model: city
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: city_id
+          foreign_key: city_id
+        required: false
+  category:
+    entity: Category
+    data_source:
+      type: mysql
+      connection: sakila
+    table: category
+    primary_key: category_id
+    dimensions:
+      category_id:
+        label: 分类ID
+        column: category_id
+        type: integer
+      name:
+        label: 分类名称
+        column: name
+        type: string
+      last_update:
+        label: 最后更新时间
+        column: last_update
+        type: datetime
+    measures: {}
+    joins: {}
+  city:
+    entity: City
+    data_source:
+      type: mysql
+      connection: sakila
+    table: city
+    primary_key: city_id
+    dimensions:
+      city_id:
+        label: city_id
+        column: city_id
+        type: integer
+      city:
+        label: 城市
+        column: city
+        type: string
+      country_id:
+        label: country_id
+        column: country_id
+        type: integer
+      last_update:
+        label: last_update
+        column: last_update
+        type: datetime
+    measures: {}
+    joins:
+      country_join:
+        target_model: country
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: country_id
+          foreign_key: country_id
+        required: false
+  country:
+    entity: Country
+    data_source:
+      type: mysql
+      connection: sakila
+    table: country
+    primary_key: country_id
+    dimensions:
+      country_id:
+        label: country_id
+        column: country_id
+        type: integer
+      country:
+        label: 国家
+        column: country
+        type: string
+      last_update:
+        label: last_update
+        column: last_update
+        type: datetime
+    measures: {}
+    joins: {}
+  customer:
+    entity: Customer
+    data_source:
+      type: mysql
+      connection: sakila
+    table: customer
+    primary_key: customer_id
+    dimensions:
+      customer_id:
+        label: 客户ID
+        column: customer_id
+        type: integer
+      store_id:
+        label: 商店ID
+        column: store_id
+        type: integer
+      first_name:
+        label: 客户名字
+        column: first_name
+        type: string
+      last_name:
+        label: 客户姓氏
+        column: last_name
+        type: string
+      email:
+        label: 电子邮件
+        column: email
+        type: string
+      address_id:
+        label: 地址ID
+        column: address_id
+        type: integer
+      create_date:
+        label: 创建日期
+        column: create_date
+        type: datetime
+      last_update:
+        label: 最后更新时间
+        column: last_update
+        type: datetime
+    measures:
+      active:
+        label: 是否激活
+        column: active
+        aggregation: sum
+        type: integer
+    joins:
+      address_join:
+        target_model: address
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: address_id
+          foreign_key: address_id
+        required: false
+      store_join:
+        target_model: store
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: store_id
+          foreign_key: store_id
+        required: false
+  film:
+    entity: Film
+    data_source:
+      type: mysql
+      connection: sakila
+    table: film
+    primary_key: film_id
+    dimensions:
+      film_id:
+        label: 电影ID
+        column: film_id
+        type: integer
+      title:
+        label: 电影标题
+        column: title
+        type: string
+      description:
+        label: 电影描述
+        column: description
+        type: string
+      release_year:
+        label: 上映年份
+        column: release_year
+        type: string
+      language_id:
+        label: 语言ID
+        column: language_id
+        type: integer
+      original_language_id:
+        label: 源语言
+        column: original_language_id
+        type: integer
+      rating:
+        label: 电影评级
+        column: rating
+        type: string
+      special_features:
+        label: 主题
+        column: special_features
+        type: string
+      last_update:
+        label: 最后更新时间
+        column: last_update
+        type: datetime
+      length_category:
+        label: 片长类型
+        column: length_category
+        type: string
+      production_scale:
+        label: 制作规模
+        column: production_scale
+        type: string
+    measures:
+      rental_duration:
+        label: 租赁时长（天）
+        column: rental_duration
+        aggregation: sum
+        type: integer
+      rental_rate:
+        label: 租赁费率
+        column: rental_rate
+        aggregation: sum
+        type: decimal
+      length:
+        label: 电影时长（分钟）
+        column: length
+        aggregation: sum
+        type: integer
+      replacement_cost:
+        label: 替换成本
+        column: replacement_cost
+        aggregation: sum
+        type: decimal
+    joins:
+      language_join:
+        target_model: language
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: original_language_id
+          foreign_key: language_id
+        required: false
+  film_actor:
+    entity: FilmActor
+    data_source:
+      type: mysql
+      connection: sakila
+    table: film_actor
+    primary_key: actor_id
+    dimensions:
+      actor_id:
+        label: 演员ID
+        column: actor_id
+        type: integer
+      film_id:
+        label: 电影ID
+        column: film_id
+        type: integer
+      last_update:
+        label: 最后更新时间
+        column: last_update
+        type: datetime
+    measures: {}
+    joins:
+      actor_join:
+        target_model: actor
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: actor_id
+          foreign_key: actor_id
+        required: false
+      film_join:
+        target_model: film
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: film_id
+          foreign_key: film_id
+        required: false
+  film_category:
+    entity: FilmCategory
+    data_source:
+      type: mysql
+      connection: sakila
+    table: film_category
+    primary_key: film_id
+    dimensions:
+      film_id:
+        label: 电影ID
+        column: film_id
+        type: integer
+      category_id:
+        label: 分类ID
+        column: category_id
+        type: integer
+      last_update:
+        label: 最后更新时间
+        column: last_update
+        type: datetime
+    measures: {}
+    joins:
+      category_join:
+        target_model: category
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: category_id
+          foreign_key: category_id
+        required: false
+      film_join:
+        target_model: film
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: film_id
+          foreign_key: film_id
+        required: false
+  film_text:
+    entity: FilmText
+    data_source:
+      type: mysql
+      connection: sakila
+    table: film_text
+    primary_key: film_id
+    dimensions:
+      film_id:
+        label: film_id
+        column: film_id
+        type: integer
+      title:
+        label: 电影标题
+        column: title
+        type: string
+      description:
+        label: 电影描述
+        column: description
+        type: string
+    measures: {}
+    joins: {}
+  inventory:
+    entity: Inventory
+    data_source:
+      type: mysql
+      connection: sakila
+    table: inventory
+    primary_key: inventory_id
+    dimensions:
+      inventory_id:
+        label: 库存ID
+        column: inventory_id
+        type: integer
+      film_id:
+        label: 电影ID
+        column: film_id
+        type: integer
+      store_id:
+        label: 商店ID
+        column: store_id
+        type: integer
+      last_update:
+        label: 最后更新时间
+        column: last_update
+        type: datetime
+    measures: {}
+    joins:
+      film_join:
+        target_model: film
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: film_id
+          foreign_key: film_id
+        required: false
+      store_join:
+        target_model: store
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: store_id
+          foreign_key: store_id
+        required: false
+  language:
+    entity: Language
+    data_source:
+      type: mysql
+      connection: sakila
+    table: language
+    primary_key: language_id
+    dimensions:
+      language_id:
+        label: 语言ID
+        column: language_id
+        type: integer
+      name:
+        label: 语言名称
+        column: name
+        type: string
+      last_update:
+        label: 最后更新时间
+        column: last_update
+        type: datetime
+    measures: {}
+    joins: {}
+  payment:
+    entity: Payment
+    data_source:
+      type: mysql
+      connection: sakila
+    table: payment
+    primary_key: payment_id
+    dimensions:
+      payment_id:
+        label: 支付ID
+        column: payment_id
+        type: integer
+      customer_id:
+        label: 客户ID
+        column: customer_id
+        type: integer
+      staff_id:
+        label: 员工ID
+        column: staff_id
+        type: integer
+      rental_id:
+        label: 租赁ID
+        column: rental_id
+        type: integer
+      payment_date:
+        label: 支付时间
+        column: payment_date
+        type: datetime
+      last_update:
+        label: last_update
+        column: last_update
+        type: datetime
+    measures:
+      amount:
+        label: 支付金额
+        column: amount
+        aggregation: sum
+        type: decimal
+    joins:
+      customer_join:
+        target_model: customer
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: customer_id
+          foreign_key: customer_id
+        required: false
+      rental_join:
+        target_model: rental
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: rental_id
+          foreign_key: rental_id
+        required: false
+      staff_join:
+        target_model: staff
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: staff_id
+          foreign_key: staff_id
+        required: false
+  rental:
+    entity: Rental
+    data_source:
+      type: mysql
+      connection: sakila
+    table: rental
+    primary_key: rental_id
+    dimensions:
+      rental_id:
+        label: 租赁ID
+        column: rental_id
+        type: integer
+      rental_date:
+        label: 租赁日期
+        column: rental_date
+        type: datetime
+      inventory_id:
+        label: 库存ID
+        column: inventory_id
+        type: integer
+      customer_id:
+        label: 客户ID
+        column: customer_id
+        type: integer
+      return_date:
+        label: 归还日期
+        column: return_date
+        type: datetime
+      staff_id:
+        label: 员工ID
+        column: staff_id
+        type: integer
+      last_update:
+        label: 最后更新时间
+        column: last_update
+        type: datetime
+    measures: {}
+    joins:
+      customer_join:
+        target_model: customer
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: customer_id
+          foreign_key: customer_id
+        required: false
+      inventory_join:
+        target_model: inventory
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: inventory_id
+          foreign_key: inventory_id
+        required: false
+      staff_join:
+        target_model: staff
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: staff_id
+          foreign_key: staff_id
+        required: false
+  staff:
+    entity: Staff
+    data_source:
+      type: mysql
+      connection: sakila
+    table: staff
+    primary_key: staff_id
+    dimensions:
+      staff_id:
+        label: 员工ID
+        column: staff_id
+        type: integer
+      first_name:
+        label: 员工名字
+        column: first_name
+        type: string
+      last_name:
+        label: 员工姓氏
+        column: last_name
+        type: string
+      address_id:
+        label: address_id
+        column: address_id
+        type: integer
+      picture:
+        label: 图片
+        column: picture
+        type: string
+      email:
+        label: 电子邮件
+        column: email
+        type: string
+      store_id:
+        label: 商店ID
+        column: store_id
+        type: integer
+      username:
+        label: 用户名称
+        column: username
+        type: string
+      password:
+        label: 密码
+        column: password
+        type: string
+      last_update:
+        label: 最后更新时间
+        column: last_update
+        type: datetime
+    measures:
+      age:
+        label: 年龄
+        column: age
+        aggregation: sum
+        type: integer
+      active:
+        label: 是否在职
+        column: active
+        aggregation: sum
+        type: integer
+    joins:
+      address_join:
+        target_model: address
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: address_id
+          foreign_key: address_id
+        required: false
+      store_join:
+        target_model: store
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: store_id
+          foreign_key: store_id
+        required: false
+  store:
+    entity: Store
+    data_source:
+      type: mysql
+      connection: sakila
+    table: store
+    primary_key: store_id
+    dimensions:
+      store_id:
+        label: 商店ID
+        column: store_id
+        type: integer
+      manager_staff_id:
+        label: 店长ID
+        column: manager_staff_id
+        type: integer
+      address_id:
+        label: 地址ID
+        column: address_id
+        type: integer
+      last_update:
+        label: 最后更新时间
+        column: last_update
+        type: datetime
+    measures: {}
+    joins:
+      address_join:
+        target_model: address
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: address_id
+          foreign_key: address_id
+        required: false
+      staff_join:
+        target_model: staff
+        relationship: many_to_one
+        join_type: left
+        condition:
+          type: key
+          local_key: manager_staff_id
+          foreign_key: staff_id
+        required: false
+  user:
+    entity: User
+    data_source:
+      type: mysql
+      connection: sakila
+    table: user
+    primary_key: id
+    dimensions:
+      id:
+        label: 用户ID
+        column: id
+        type: integer
+      name:
+        label: 姓名
+        column: name
+        type: string
+    measures:
+      age:
+        label: 年龄
+        column: age
+        aggregation: sum
+        type: integer
+    joins: {}
+join_graph:
+  nodes:
+  - actor
+  - address
+  - category
+  - city
+  - country
+  - customer
+  - film
+  - film_actor
+  - film_category
+  - film_text
+  - inventory
+  - language
+  - payment
+  - rental
+  - staff
+  - store
+  - user
+  edges:
+  - from: address
+    to: city
+    join_id: city_join
+  - from: city
+    to: country
+    join_id: country_join
+  - from: customer
+    to: address
+    join_id: address_join
+  - from: customer
+    to: store
+    join_id: store_join
+  - from: film
+    to: language
+    join_id: language_join
+  - from: film_actor
+    to: actor
+    join_id: actor_join
+  - from: film_actor
+    to: film
+    join_id: film_join
+  - from: film_category
+    to: category
+    join_id: category_join
+  - from: film_category
+    to: film
+    join_id: film_join
+  - from: inventory
+    to: film
+    join_id: film_join
+  - from: inventory
+    to: store
+    join_id: store_join
+  - from: payment
+    to: customer
+    join_id: customer_join
+  - from: payment
+    to: rental
+    join_id: rental_join
+  - from: payment
+    to: staff
+    join_id: staff_join
+  - from: rental
+    to: customer
+    join_id: customer_join
+  - from: rental
+    to: inventory
+    join_id: inventory_join
+  - from: rental
+    to: staff
+    join_id: staff_join
+  - from: staff
+    to: address
+    join_id: address_join
+  - from: staff
+    to: store
+    join_id: store_join
+  - from: store
+    to: address
+    join_id: address_join
+  - from: store
+    to: staff
+    join_id: staff_join
+kpis:
+  actor_count:
+    name: 演员信息表数量
+    description: 统计演员信息表的数量
+    host:
+      entity: Actor
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: actor
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: last_update
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  address_count:
+    name: 地址表数量
+    description: 统计地址表的数量
+    host:
+      entity: Address
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: address
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: last_update
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  category_count:
+    name: 电影分类表数量
+    description: 统计电影分类表的数量
+    host:
+      entity: Category
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: category
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: last_update
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  city_count:
+    name: 城市表数量
+    description: 统计城市表的数量
+    host:
+      entity: City
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: city
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: last_update
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  country_count:
+    name: 国家表数量
+    description: 统计国家表的数量
+    host:
+      entity: Country
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: country
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: last_update
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  customer_count:
+    name: 客户信息表数量
+    description: 统计客户信息表的数量
+    host:
+      entity: Customer
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: customer
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: create_date
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  film_count:
+    name: 电影信息表数量
+    description: 统计电影信息表的数量
+    host:
+      entity: Film
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: film
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: last_update
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  film_actor_count:
+    name: 电影与演员关联表数量
+    description: 统计电影与演员关联表的数量
+    host:
+      entity: FilmActor
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: film_actor
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: last_update
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  film_category_count:
+    name: 电影与分类关联表数量
+    description: 统计电影与分类关联表的数量
+    host:
+      entity: FilmCategory
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: film_category
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: last_update
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  inventory_count:
+    name: 库存表数量
+    description: 统计库存表的数量
+    host:
+      entity: Inventory
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: inventory
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: last_update
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  language_count:
+    name: 语言表数量
+    description: 统计语言表的数量
+    host:
+      entity: Language
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: language
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: last_update
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  payment_count:
+    name: 支付表数量
+    description: 统计支付表的数量
+    host:
+      entity: Payment
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: payment
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: payment_date
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  rental_count:
+    name: 租赁表数量
+    description: 统计租赁表的数量
+    host:
+      entity: Rental
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: rental
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: rental_date
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  staff_count:
+    name: 员工表数量
+    description: 统计员工表的数量
+    host:
+      entity: Staff
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: staff
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: last_update
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+  store_count:
+    name: 商店表数量
+    description: 统计商店表的数量
+    host:
+      entity: Store
+      cardinality: many
+      grain: entity
+    computation:
+      type: aggregation
+      base_model: store
+      measure: count
+      aggregation: count
+      filters: []
+      joins: []
+    time:
+      dimension: last_update
+      grain:
+      - day
+      - week
+      - month
+      - year
+      default_grain: month
+    output:
+      type: vector
+      format: integer
+governance:
+  rules:
+  - id: require_time_dimension
+    condition: kpi.time.dimension is not None
+    action: enforce_time_dimension
+    description: 所有 KPI 必须指定时间维度
+  policies:
+    role_permissions:
+      admin:
+        allowed_kpis:
+        - '*'
+        allowed_entities:
+        - '*'
+      analyst:
+        allowed_kpis:
+        - actor_count
+        - address_count
+        - category_count
+        - city_count
+        - country_count
+        - customer_count
+        - film_count
+        - film_actor_count
+        - film_category_count
+        - inventory_count
+        - language_count
+        - payment_count
+        - rental_count
+        - staff_count
+        - store_count
+        allowed_entities:
+        - Actor
+        - Address
+        - Category
+        - City
+        - Country
+        - Customer
+        - Film
+        - FilmActor
+        - FilmCategory
+        - FilmText
+        - Inventory
+        - Language
+        - Payment
+        - Rental
+        - Staff
+        - Store
+        - User
