@@ -30,3 +30,9 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\new-task.ps1" -
 ```
 
 Then fill task docs and append a row in `tasks/index.md`.
+
+## Skills
+
+- Skills mirror: `skills/`
+- Skills list: `skills/index.md`
+- Resync helper: `tools/sync-skills.ps1`
