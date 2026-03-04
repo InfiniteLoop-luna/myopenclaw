@@ -9,6 +9,7 @@ Recommended structure:
   scripts/
   docs/
   README.md
+  task.meta.json
 ```
 
 Checklist:
@@ -16,3 +17,5 @@ Checklist:
 - Put executable scripts under `scripts/`
 - Put usage/notes under `docs/`
 - Keep task-specific quick-start in this README
+- Fill `task.meta.json`
+- Add one line into `tasks/index.md`

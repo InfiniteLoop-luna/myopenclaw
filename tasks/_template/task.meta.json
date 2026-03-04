@@ -1,0 +1,10 @@
+﻿{
+  "name": "<task-name>",
+  "status": "draft",
+  "owner": "<owner>",
+  "platform": ["windows"],
+  "entrypoint": "scripts/<entry-script>.ps1",
+  "description": "<what this task does>",
+  "tags": ["automation"],
+  "updatedAt": "YYYY-MM-DD"
+}
