@@ -36,3 +36,15 @@ Then fill task docs and append a row in `tasks/index.md`.
 - Skills mirror: `skills/`
 - Skills list: `skills/index.md`
 - Resync helper: `tools/sync-skills.ps1`
+
+### One-command skills publish
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\publish-skills.ps1"
+```
+
+Optional custom commit message:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\publish-skills.ps1" -Message "chore(skills): weekly sync"
+```
