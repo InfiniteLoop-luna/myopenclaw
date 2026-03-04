@@ -48,3 +48,16 @@ Optional custom commit message:
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\publish-skills.ps1" -Message "chore(skills): weekly sync"
 ```
+
+More options:
+
+```powershell
+# Preview only (no commit/push)
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\publish-skills.ps1" -DryRun
+
+# Publish and create a tag
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\publish-skills.ps1" -TagAfterPush
+
+# Publish and create custom tag
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\publish-skills.ps1" -TagAfterPush -TagName "skills-2026-03-04"
+```

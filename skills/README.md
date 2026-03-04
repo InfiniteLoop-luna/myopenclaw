@@ -11,3 +11,13 @@ See `skills/index.md` for a quick list.
 
 - Sync only: `tools/sync-skills.ps1`
 - Sync + commit + push: `tools/publish-skills.ps1`
+
+Examples:
+
+```powershell
+# Preview changes only
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\publish-skills.ps1" -DryRun
+
+# Publish + push + auto-tag
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\tools\publish-skills.ps1" -TagAfterPush
+```
