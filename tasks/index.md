@@ -14,3 +14,4 @@ Central registry of reusable automation tasks.
 2. Fill in `README.md` and optional `task.meta.json`
 3. Add one row to this index table
 4. Commit + push
+

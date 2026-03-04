@@ -1,0 +1,11 @@
+﻿{
+  "name": "osi-adoption",
+  "status": "planned",
+  "owner": "lijing",
+  "platform": ["windows", "python"],
+  "entrypoint": "(not started)",
+  "description": "Plan for introducing OSI as semantic interchange standard alongside existing OSM workflow.",
+  "tags": ["semantic-model", "osi", "ddm", "interoperability"],
+  "updatedAt": "2026-03-04",
+  "executionGate": "Require explicit start command"
+}
