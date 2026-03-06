@@ -82,6 +82,35 @@ python diff_osm.py old.yaml new.yaml --md diff.md --json diff.json
 python make_release_artifacts.py sakila.ddm release_out sakila --profile profile.example.yaml --kpi-mode advanced --top 30 --baseline old.yaml
 ```
 
+## 命令模板（复制即用）
+
+```bash
+# A. 最小可用：DDM -> OSM
+python convert.py <input.ddm> <output.yaml> <database_name>
+
+# B. 配置化转换（推荐）
+python convert.py <input.ddm> <output.yaml> <database_name> \
+  --profile <profile.yaml> \
+  --kpi-mode advanced \
+  --report <report.md>
+
+# C. 质量治理检查（lint）
+python lint_osm.py <output.yaml> --strict
+
+# D. 生成高价值 KPI 包（自动补齐依赖）
+python curate_kpi_pack.py <output.yaml> <top_pack.yaml> --top 30 --report <top_pack.report.md>
+
+# E. 版本差异对比
+python diff_osm.py <old.yaml> <new.yaml> --md <diff.md> --json <diff.json>
+
+# F. 一键发布产物（最完整）
+python make_release_artifacts.py <input.ddm> <release_dir> <database_name> \
+  --profile <profile.yaml> \
+  --kpi-mode advanced \
+  --top 30 \
+  --baseline <old.yaml>
+```
+
 ---
 
 ## 参数说明
