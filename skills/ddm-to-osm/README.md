@@ -1,80 +1,171 @@
 # DDM to OSM Converter
 
-✅ **Skill 创建完成！**
+将 Datablau DDM (Data Definition Model) 自动转换为 OSM (Ontology-Lite Semantic Model) YAML。
 
-## 功能
+## 当前版本亮点（P2）
 
-自动将 Datablau DDM (Data Definition Model) 文件转换为 OSM (Ontology-Lite Semantic Model) YAML 格式。
+- ✅ 复合外键解析（multi-column FK）
+- ✅ 主键 / 唯一键 / 索引解析增强
+- ✅ 语义类型推断改进（边界匹配，降低误判）
+- ✅ 关系反向命名修复（如 `city -> cities`, `address -> addresses`）
+- ✅ KPI 时间结构统一（`dimension/default_grain/allowed_grains/window`）
+- ✅ KPI 结构规范化（`constraints` / `dependencies` 补齐）
+- ✅ Ontology 增加 `constraints` / `enums`
+- ✅ Semantic Model 增加 `filters`，join 支持 `expression` / `temporal_validity` 覆写
+- ✅ 支持 `--kpi-mode basic|advanced`
+- ✅ 支持 `--profile <yaml>` 配置化生成
+- ✅ `convert.py` 支持 `--report`（生成报告）
+- ✅ meta 版本与来源指纹（`model_version` / `source_fingerprint`）
+- ✅ 新增 `lint_osm.py` 一致性检查
+- ✅ `curate_kpi_pack.py` 增强：依赖闭包补全 + governance 权限联动
+- ✅ 新增 `diff_osm.py`（OSM 差异报告）
+- ✅ 新增 `make_release_artifacts.py`（一键发布产物流水）
+- ✅ 增强测试（覆盖 P0/P1/P2 回归）
+
+---
 
 ## 文件结构
 
-```
+```text
 ddm-to-osm/
-├── SKILL.md              # 详细使用文档
-├── EXAMPLE.md            # 使用示例和输出示例
-├── convert.py            # 主转换脚本
-├── requirements.txt      # 依赖项 (pyyaml)
-└── scripts/
-    ├── ddm_parser.py     # DDM XML 解析器
-    └── osm_generator.py  # OSM YAML 生成器
+├── README.md
+├── SKILL.md
+├── EXAMPLE.md
+├── CHANGELOG.md
+├── convert.py
+├── test.py
+├── lint_osm.py
+├── curate_kpi_pack.py
+├── diff_osm.py
+├── make_release_artifacts.py
+├── requirements.txt
+├── profile.example.yaml
+├── scripts/
+│   ├── ddm_parser.py
+│   └── osm_generator.py
+└── docs/
+    ├── OSM_CONCEPTS.md
+    ├── DDM_FORMAT.md
+    └── TROUBLESHOOTING.md
 ```
+
+---
 
 ## 快速使用
 
 ```bash
-# 安装依赖
-pip install pyyaml
+# 1) 安装依赖
+pip install -r requirements.txt
 
-# 转换 DDM 到 OSM
-python convert.py <ddm_file> <output_yaml> [database_name]
-
-# 示例
+# 2) 基础转换（advanced KPI）
 python convert.py sakila.ddm sakila_osm.yaml sakila
+
+# 3) 仅生成基础 KPI
+python convert.py sakila.ddm sakila_osm_basic.yaml sakila --kpi-mode basic
+
+# 4) 使用 profile 覆写规则
+python convert.py sakila.ddm sakila_osm_profiled.yaml sakila --profile profile.example.yaml
+
+# 5) 生成报告（P2）
+python convert.py sakila.ddm sakila_osm_profiled.yaml sakila --profile profile.example.yaml --report sakila.report.md
+
+# 6) lint 检查
+python lint_osm.py sakila_osm_profiled.yaml
+
+# 7) 筛选高价值 KPI 包（自动补依赖）
+python curate_kpi_pack.py sakila_osm_profiled.yaml sakila_top30.yaml --top 30
+
+# 8) OSM diff 报告（P2）
+python diff_osm.py old.yaml new.yaml --md diff.md --json diff.json
+
+# 9) 一键发布产物流水（P2）
+python make_release_artifacts.py sakila.ddm release_out sakila --profile profile.example.yaml --kpi-mode advanced --top 30 --baseline old.yaml
 ```
-
-## 转换内容
-
-✅ **Ontology Layer** - 实体、属性、关系定义  
-✅ **Semantic Model Layer** - 数据源映射、维度、度量、Join 定义  
-✅ **Join Graph** - 自动构建实体间的连接图  
-✅ **KPI Layer** - 为每个实体生成基础 count KPI  
-✅ **Governance Layer** - 基础规则和权限策略  
-
-## 测试结果
-
-使用 sakila.ddm 测试：
-- ✅ 解析 17 个实体
-- ✅ 识别 21 个外键关系
-- ✅ 生成 21 条 Join Graph 边
-- ✅ 生成 15 个基础 KPI
-- ✅ 正确推断语义类型（identifier, name, email, phone, currency 等）
-
-## 特性
-
-- 🔍 **智能解析**：自动识别实体、属性、主键、外键、索引
-- 🧠 **语义推断**：根据字段名自动推断语义类型
-- 🔗 **关系识别**：自动解析 RelationshipRelational 并生成 Join 定义
-- 📊 **类型映射**：DDM 物理类型到 OSM 语义类型的智能映射
-- 🌐 **中文支持**：完整支持中文标签和描述
-- ⚡ **快速生成**：秒级完成大型数据库模型的转换
-
-## 下一步
-
-生成 OSM 后，你可以：
-1. 手动调整和完善 KPI 定义
-2. 添加更多业务规则到 Governance Layer
-3. 使用 OSM 编译器测试 IR 到 SQL 的转换
-4. 集成到你的语义数据平台
-
-## 相关资源
-
-- [OSM 概念说明](docs/OSM_CONCEPTS.md) - 本地文档，详细介绍 OSM 四层架构
-- [DDM 格式说明](docs/DDM_FORMAT.md) - DDM XML 格式详解
-- [故障排除](docs/TROUBLESHOOTING.md) - 常见问题和解决方案
-- [使用示例](EXAMPLE.md) - 详细的使用示例和输出示例
 
 ---
 
-**Created**: 2026-03-03  
-**Version**: 1.0  
-**Status**: ✅ Ready to use
+## 参数说明
+
+- `ddm_file`：输入 DDM 文件路径（.ddm）
+- `output_yaml`：输出 OSM YAML 文件路径
+- `database_name`：数据库名（可选，默认 `database`）
+- `--kpi-mode`：`basic` 或 `advanced`（默认 `advanced`）
+- `--profile`：YAML 配置文件（可选）
+- `--report`：转换报告输出路径（可选，P2）
+
+---
+
+## 输出能力概览
+
+### Ontology Layer
+- 实体 / 属性 / 关系
+- 属性语义类型推断（identifier、foreign_key、name、email、currency...）
+- `constraints`（自动 + profile 补充）
+- `enums`（自动 + profile 补充）
+
+### Semantic Model Layer
+- 数据源映射、主键、维度、度量
+- Join 定义（支持单列和复合键）
+- `filters`（自动模板 + profile 合并）
+- join 支持 profile 覆写为 expression/temporal_validity
+
+### Join Graph
+- 自动生成节点与边
+
+### KPI Layer
+- `basic`：基础聚合 KPI（count/sum/avg/max/min/distinct）
+- `advanced`：在 basic 基础上增加公式派生 + YoY/MoM
+- 所有 KPI 自动标准化：
+  - `time`: `dimension/default_grain/allowed_grains/window`
+  - `constraints`: `require_time/require_host/allowed_filters`
+  - `dependencies`: `metrics/entities`
+
+### Governance Layer
+- 基础规则和角色权限策略
+- curated KPI 包时自动同步 `allowed_kpis`
+
+### P2 治理化能力
+- `meta.model_version`
+- `meta.source_fingerprint`（DDM 内容指纹）
+- 报告产出（generation report）
+- 差异对比（diff report）
+- 发布清单（manifest.json）
+
+---
+
+## 典型测试结果（sakila）
+
+- 解析实体：17
+- Join Graph 边：21
+- KPI：
+  - `basic` = 70
+  - `advanced` = 198
+- curated top30（含依赖补全）≈ 32
+- lint：advanced / curated 均可通过
+
+---
+
+## 测试
+
+```bash
+python test.py
+```
+
+测试覆盖：
+- 环境与依赖
+- parser/generator 导入
+- sakila golden 回归
+- P1 结构回归（constraints/enums/filters/KPI 标准字段）
+- profile 覆写回归（expression join / filters / enums）
+- lint + curate + governance 一致性回归
+- P2 回归（meta 指纹/version、report、diff、release manifest）
+
+---
+
+## 相关文档
+
+- [SKILL.md](SKILL.md)
+- [EXAMPLE.md](EXAMPLE.md)
+- [OSM 概念](docs/OSM_CONCEPTS.md)
+- [DDM 格式](docs/DDM_FORMAT.md)
+- [故障排除](docs/TROUBLESHOOTING.md)

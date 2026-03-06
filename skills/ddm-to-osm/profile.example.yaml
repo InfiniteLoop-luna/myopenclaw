@@ -1,0 +1,44 @@
+data_source:
+  # 可选: mysql | postgres | snowflake | jdbc
+  type: mysql
+  # 连接名（会写入 semantic_models.*.data_source.connection）
+  connection: sakila
+
+# P1: Ontology 规则（可选）
+ontology_rules:
+  entities:
+    Customer:
+      # 手工补充约束
+      constraints:
+        - type: required_relation
+          rule: Customer must belong to Store
+        - type: range
+          rule: Customer.age must be between 0 and 120
+      # 手工补充枚举
+      enums:
+        vip_level: [normal, silver, gold, platinum]
+
+# P1: Semantic 规则（可选）
+semantic_rules:
+  # 覆写或补充 joins（支持 expression / temporal_validity）
+  joins:
+    payment:
+      # key 可以是自动生成 join_id，也可以是原始 fk_name
+      rental_payment_join:
+        condition:
+          type: expression
+          expression: |
+            payment.rental_id = rental.rental_id
+            AND payment.amount > 0
+        temporal_validity:
+          enabled: false
+
+  # 补充静态 filter（会与自动 filter 深度合并）
+  filters:
+    customer:
+      region_scope:
+        expression:
+          type: condition
+          field: store_id
+          operator: in
+          value: [1, 2, 3]

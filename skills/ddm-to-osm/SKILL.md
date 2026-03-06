@@ -1,15 +1,36 @@
 # DDM to OSM Converter Skill
 
-自动将 Datablau DDM (Data Definition Model) 文件转换为 OSM (Ontology-Lite Semantic Model) YAML 格式。
+自动将 Datablau DDM (Data Definition Model) 转换为 OSM (Ontology-Lite Semantic Model) YAML。
 
-## 功能
+## P2 版本能力
 
-从 DDM 文件中提取数据库模型信息，自动生成包含四层结构的 OSM 模型：
+### 核心能力
+1. **Ontology Layer**：实体、属性、关系、约束、枚举
+2. **Semantic Model Layer**：数据源映射、维度、度量、Join、静态 Filter
+3. **KPI Layer**：基础聚合 + 派生指标 + 结构标准化
+4. **Governance Layer**：基础规则与角色权限（支持 curated 联动）
+5. **Release & Diff Layer（P2）**：版本追踪、差异报告、发布产物流水
 
-1. **Ontology Layer（语义真相层）**：实体、属性、关系定义
-2. **Semantic Model Layer（数据映射层）**：数据源映射、维度、度量、Join 定义
-3. **KPI Layer（业务指标层）**：基础 KPI 定义
-4. **Governance Layer（治理层）**：规则和权限策略
+### P2 增强点
+- 复合外键解析（multi-column FK）
+- 主键 / 唯一键 / 索引解析增强
+- 语义类型推断边界匹配（减少误判）
+- inverse 命名修复（避免 `addresss/citys`）
+- Ontology 增加 `constraints` / `enums`（自动 + profile）
+- Semantic Model 增加 `filters`（自动 + profile）
+- join 支持 profile 覆写到 `expression` / `temporal_validity`
+- KPI `time` 结构统一
+- KPI 自动补齐 `constraints` / `dependencies`
+- 支持 `--kpi-mode basic|advanced`
+- 支持 `--profile <yaml>`
+- `convert.py` 支持 `--report`
+- meta 增加 `model_version` / `source_fingerprint`
+- 新增 `lint_osm.py` 一致性检查
+- `curate_kpi_pack.py` 支持依赖补全与权限联动
+- 新增 `diff_osm.py` 结构化差异报告
+- 新增 `make_release_artifacts.py` 一键生成发布产物 + manifest
+
+---
 
 ## 使用方法
 
@@ -19,271 +40,166 @@
 python convert.py <ddm_file> <output_yaml> [database_name]
 ```
 
-### 参数说明
-
-- `ddm_file` - DDM 文件路径（.ddm 格式）
-- `output_yaml` - 输出的 OSM YAML 文件路径
-- `database_name` - 数据库名称（可选，默认为 "database"）
-
-### 示例
+### 推荐用法
 
 ```bash
-# 转换 sakila 数据库模型
+# advanced KPI（默认）
 python convert.py sakila.ddm sakila_osm.yaml sakila
 
-# 转换其他数据库模型
-python convert.py ecommerce.ddm ecommerce_osm.yaml ecommerce
+# basic KPI
+python convert.py sakila.ddm sakila_osm_basic.yaml sakila --kpi-mode basic
+
+# 使用 profile 覆写规则
+python convert.py sakila.ddm sakila_osm_profiled.yaml sakila --profile profile.example.yaml
+
+# 生成转换报告（P2）
+python convert.py sakila.ddm sakila_osm_profiled.yaml sakila --profile profile.example.yaml --report sakila.report.md
+
+# lint 检查
+python lint_osm.py sakila_osm_profiled.yaml
+
+# curated KPI 包（自动补依赖）
+python curate_kpi_pack.py sakila_osm_profiled.yaml sakila_top30.yaml --top 30
+
+# 生成差异报告（P2）
+python diff_osm.py old.yaml new.yaml --md diff.md --json diff.json
+
+# 一键发布产物流水（P2）
+python make_release_artifacts.py sakila.ddm release_out sakila --profile profile.example.yaml --kpi-mode advanced --top 30 --baseline old.yaml
 ```
 
-## 转换内容
+### 参数说明（convert.py）
 
-### 1. Ontology Layer
+- `ddm_file`：DDM 文件路径（.ddm）
+- `output_yaml`：输出 OSM YAML 文件路径
+- `database_name`：数据库名称（可选，默认 `database`）
+- `--kpi-mode`：`basic` 或 `advanced`（默认 `advanced`）
+- `--profile`：YAML 配置文件路径（可选）
+- `--report`：Markdown 报告路径（可选，P2）
 
-从 DDM 的 EntityComposite 和 EntityAttribute 生成：
+---
 
-- **实体（Entity）**：从 DDM 的表定义生成，包含中文标签
-- **属性（Attribute）**：包含类型映射、可空性、默认值等
-- **关系（Relation）**：从外键关系推断实体间的关联
-- **语义类型推断**：自动识别 identifier、name、email、currency 等语义类型
-
-### 2. Semantic Model Layer
-
-为每个实体生成：
-
-- **数据源配置**：数据库类型、连接信息、表名
-- **主键定义**：从 DDM 的 PrimaryKey 提取
-- **维度（Dimensions）**：非数值字段作为维度
-- **度量（Measures）**：数值字段作为度量，默认聚合方式为 sum
-- **Join 定义**：从外键关系生成 join 配置
-
-### 3. Join Graph
-
-自动构建：
-
-- **节点（Nodes）**：所有 semantic models
-- **边（Edges）**：基于外键关系的 join 路径
-
-### 4. KPI Layer
-
-为每个实体生成基础 KPI：
-
-- **Count KPI**：统计实体数量
-- **时间维度**：自动识别时间字段（包含 date/time 的字段）
-- **时间粒度**：支持 day、week、month、year
-
-### 5. Governance Layer
-
-生成基础治理规则：
-
-- **规则（Rules）**：时间维度强制要求等
-- **权限策略（Policies）**：admin 和 analyst 角色的基础权限
-
-## 输出示例
-
-生成的 OSM YAML 文件结构：
+## profile 配置示例
 
 ```yaml
-# ============================================================
-# OSM (Ontology-Lite Semantic Model)
-# Auto-generated from DDM
-# Database: sakila
-# ============================================================
+data_source:
+  type: mysql
+  connection: sakila
 
+ontology_rules:
+  entities:
+    Customer:
+      constraints:
+        - type: required_relation
+          rule: Customer must belong to Store
+      enums:
+        vip_level: [normal, silver, gold, platinum]
+
+semantic_rules:
+  joins:
+    payment:
+      rental_payment_join:
+        condition:
+          type: expression
+          expression: payment.rental_id = rental.rental_id
+  filters:
+    customer:
+      region_scope:
+        expression:
+          type: condition
+          field: store_id
+          operator: in
+          value: [1, 2, 3]
+```
+
+---
+
+## 输出结构（关键字段）
+
+### meta（P2）
+
+```yaml
+meta:
+  schema_version: osm-v1.0
+  generator: ddm-to-osm
+  generator_version: 1.2.0-p1
+  generated_at: 2026-03-06T...
+  kpi_mode: basic|advanced
+  model_version: v1
+  source_fingerprint: sha256:...
+```
+
+### Ontology 新字段
+
+```yaml
 ontology:
   entities:
-    Actor:
-      label: 演员信息表
-      description: 演员信息表
-      attributes:
-        actor_id:
-          label: 演员ID
-          type: integer
-          physical_type: SMALLINT UNSIGNED
-          nullable: false
-          semantic_type: identifier
-          auto_increment: true
-        first_name:
-          label: 演员名字
-          type: string
-          physical_type: VARCHAR(45)
-          nullable: false
-          semantic_type: name
-      relations:
-        - name: film_actor_fk
-          target: Film
-          cardinality: many_to_one
-          inverse: actors
+    Customer:
+      constraints: []
+      enums: {}
+```
 
+### Semantic Model 新字段
+
+```yaml
 semantic_models:
-  actor:
-    entity: Actor
-    data_source:
-      type: mysql
-      connection: sakila
-    table: actor
-    primary_key: actor_id
-    dimensions:
-      actor_id:
-        label: 演员ID
-        column: actor_id
-        type: integer
-      first_name:
-        label: 演员名字
-        column: first_name
-        type: string
-    measures: {}
+  customer:
     joins: {}
+    filters: {}
+```
 
-join_graph:
-  nodes:
-    - actor
-    - film
-    - ...
-  edges:
-    - from: film_actor
-      to: actor
-      join_id: actor_join
+### KPI 标准字段
 
+```yaml
 kpis:
-  actor_count:
-    name: 演员信息表数量
-    description: 统计演员信息表的数量
-    host:
-      entity: Actor
-      cardinality: many
-      grain: entity
-    computation:
-      type: aggregation
-      base_model: actor
-      measure: count
-      aggregation: count
+  payment_amount_sum:
     time:
-      dimension: last_update
-      grain: [day, week, month, year]
+      dimension: payment_date
       default_grain: month
-
-governance:
-  rules:
-    - id: require_time_dimension
-      condition: kpi.time.dimension is not None
-      action: enforce_time_dimension
-  policies:
-    role_permissions:
-      admin:
-        allowed_kpis: ['*']
-        allowed_entities: ['*']
+      allowed_grains: [day, week, month, quarter, year]
+      window: null
+    constraints:
+      require_time: true
+      require_host: true
+      allowed_filters: []
+    dependencies:
+      metrics: []
+      entities: [Payment]
 ```
 
-## 后续步骤
+---
 
-生成 OSM 文件后，你需要：
+## 发布产物（P2）
 
-1. **检查生成的文件**：确认实体、属性、关系是否正确
-2. **调整 KPI 定义**：根据业务需求添加更多有意义的 KPI
-3. **完善关系定义**：检查并调整实体间的关系（many_to_one、one_to_many 等）
-4. **添加业务规则**：在 Governance Layer 添加更多的业务约束
-5. **测试查询**：使用 OSM 编译器测试 IR 到 SQL 的转换
+`make_release_artifacts.py` 默认输出：
+- `<name>.osm.yaml`
+- `<name>.report.md`
+- `<name>.topN.yaml`
+- `<name>.topN.report.md`
+- `<name>.diff.md` / `<name>.diff.json`（有 baseline 时）
+- `manifest.json`
 
-## 类型映射
+---
 
-DDM 物理类型到 OSM 语义类型的映射：
-
-| DDM 物理类型 | OSM 语义类型 |
-|-------------|-------------|
-| INT, SMALLINT, BIGINT, TINYINT | integer |
-| DECIMAL, NUMERIC, FLOAT, DOUBLE | decimal |
-| VARCHAR, CHAR, TEXT | string |
-| DATE, DATETIME, TIMESTAMP | datetime |
-| BOOLEAN, BOOL | boolean |
-| GEOMETRY, POINT | geometry |
-
-## 语义类型推断
-
-根据字段名自动推断语义类型：
-
-| 字段名模式 | 语义类型 |
-|-----------|---------|
-| *_id (主键) | identifier |
-| *_id (外键) | foreign_key |
-| *name*, *title* | name |
-| *email* | email |
-| *phone*, *tel* | phone |
-| *date*, *time* | timestamp |
-| *amount*, *price*, *cost* | currency |
-| *rate*, *percent* | percentage |
-| *status*, *state* | status |
-| *count*, *number* | count |
-
-## 依赖
-
-- Python 3.7+
-- PyYAML
-
-安装依赖：
+## 测试
 
 ```bash
-pip install pyyaml
+python test.py
 ```
 
-## 文件结构
+覆盖：
+- parser/generator/golden 回归
+- P1 字段回归（constraints/enums/filters/KPI 标准字段）
+- profile 覆写回归（expression join / filters / enums）
+- lint + curate + governance 一致性回归
+- P2 回归（meta 指纹/version、report、diff、release manifest）
 
-```
-ddm-to-osm/
-├── SKILL.md              # 本文档
-├── convert.py            # 主转换脚本
-└── scripts/
-    ├── ddm_parser.py     # DDM XML 解析器
-    └── osm_generator.py  # OSM YAML 生成器
-```
-
-## 限制
-
-1. **关系推断**：目前主要基于外键关系推断，复杂的多对多关系可能需要手动调整
-2. **KPI 生成**：只生成基础的 count KPI，业务 KPI 需要手动添加
-3. **语义类型**：基于字段名的启发式推断，可能需要手动调整
-4. **Join 类型**：默认生成 left join，可能需要根据业务调整为 inner join
-
-## 故障排除
-
-### 问题：解析 DDM 文件失败
-
-- 确认 DDM 文件格式正确（XML 格式）
-- 检查文件编码是否为 UTF-8
-- 确认 DDM 文件是 Datablau LDM 格式
-
-### 问题：生成的关系不正确
-
-- 检查 DDM 文件中的外键定义
-- 手动调整生成的 OSM YAML 中的 relations 部分
-
-### 问题：缺少某些实体
-
-- 确认 DDM 文件中包含这些实体
-- 检查实体是否有 EntityComposite 类型定义
-
-## 示例：完整工作流
-
-```bash
-# 1. 转换 DDM 到 OSM
-python convert.py sakila.ddm sakila_osm.yaml sakila
-
-# 2. 检查生成的文件
-cat sakila_osm.yaml
-
-# 3. 手动调整 KPI 定义（使用编辑器）
-# 添加业务相关的 KPI，如：
-# - store_revenue: 门店收入
-# - customer_lifetime_value: 客户生命周期价值
-# - film_rental_count: 电影租赁次数
-
-# 4. 使用 OSM 编译器测试
-cd ../sakila_osm/compiler
-python demo.py
-```
+---
 
 ## 相关资源
 
-- [OSM 概念说明](docs/OSM_CONCEPTS.md) - 本地文档，详细介绍 OSM 四层架构
-- [DDM 格式说明](docs/DDM_FORMAT.md) - DDM XML 格式详解
-- [故障排除](docs/TROUBLESHOOTING.md) - 常见问题和解决方案
-- [使用示例](EXAMPLE.md) - 详细的使用示例和输出示例
+- [README.md](README.md)
+- [EXAMPLE.md](EXAMPLE.md)
+- [OSM 概念说明](docs/OSM_CONCEPTS.md)
+- [DDM 格式说明](docs/DDM_FORMAT.md)
+- [故障排除](docs/TROUBLESHOOTING.md)
